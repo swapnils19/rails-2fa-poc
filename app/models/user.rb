@@ -4,6 +4,9 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
+  # Virtual attribute for 2FA code input
+  attr_accessor :otp_code
+
   # 2FA methods
   def generate_otp_secret
     self.otp_secret = ROTP::Base32.random_base32
@@ -18,10 +21,10 @@ class User < ApplicationRecord
   end
 
   def verify_otp(token)
-    return false unless otp_secret && otp_enabled?
+    return false unless otp_secret
 
     totp = ROTP::TOTP.new(otp_secret)
-    totp.verify(token, drift_ahead: 15, drift_behind: 15)
+    totp.verify(token, drift_ahead: 30, drift_behind: 30)
   end
 
   def enable_otp!

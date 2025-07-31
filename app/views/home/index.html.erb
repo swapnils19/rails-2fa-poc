@@ -19,8 +19,10 @@
               </div>
               <%= link_to "Disable 2FA",
                   disable_two_factor_path,
-                  method: :delete,
-                  data: { confirm: "Are you sure you want to disable 2FA?" },
+                  data: {
+                    "turbo-method": :delete,
+                    confirm: "Are you sure you want to disable 2FA?"
+                  },
                   class: "text-red-600 hover:text-red-800 font-medium" %>
             </div>
           <% else %>
@@ -39,8 +41,10 @@
         </div>
 
         <div class="border-t pt-4">
-          <%= link_to "Sign out", destroy_user_session_path, method: :delete,
-              class: "text-gray-600 hover:text-gray-800" %>
+          <%= form_with url: destroy_user_session_path, method: :delete, local: true, class: "inline" do |form| %>
+            <%= form.submit "Sign out",
+                class: "text-gray-600 hover:text-gray-800 bg-transparent border-0 p-0 cursor-pointer underline" %>
+          <% end %>
         </div>
       </div>
     <% else %>
